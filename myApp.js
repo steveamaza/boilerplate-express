@@ -1,5 +1,7 @@
 require('dotenv').config();
+require('body-parser');
 
+const bodyParser = require('body-parser');
 let express = require('express');
 let app = express();
 
@@ -9,30 +11,18 @@ app.get('/', (req, res) => {
 
 app.use('/public', express.static('public'));
 
-app.get('/json', (req, res) => {
-    const myEnv = process.env.MESSAGE_STYLE;
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
 
-    if (myEnv == "uppercase"){
-        message = {"message":"HELLO JSON"};
-    } else {
-        message = {"message":"Hello json"};
-    }
-    res.json (message);
-});
-
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path} - ${req.ip}`);
-    next();
-});
-
-app.get('/now', (req, res, next) => {
-    // Middleware function 1
-    console.log('Middleware function 1');
-    next();
-}, function(req, res){
-    req.time = new Date().toString();
-    console.log(req.time);
-    res.json({time: req.time});
+app.route('/name').get((req, res) => {
+    let firstname = req.query.first;
+    let lastname = req.query.last;
+    res.json({ name: `${firstname} ${lastname}`});
+}).post((req,res) => {
+    //handle post requests here
+    let firstname = req.body.first;
+    let lastname = req.body.last;
+    res.json({ name: `${firstname} ${lastname}`});
 });
   
- module.exports = app;
+ module.exports = app;git 
